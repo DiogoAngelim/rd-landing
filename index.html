@@ -48,7 +48,6 @@
       box-shadow: 0 0 50px -12px rgba(59, 130, 246, 0.5);
     }
 
-    /* Smooth scrolling for internal links */
     html {
       scroll-behavior: smooth;
     }
@@ -78,8 +77,29 @@
     .animation-delay-2000 {
       animation-delay: 2s;
     }
-  </style>
-  <style>
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    iframe {
+      pointer-events: none;
+    }
+
     *,
     ::before,
     ::after {
@@ -4921,7 +4941,7 @@
           precision, risk is quantified, and alpha is generated through science, not luck.
         </p>
         <div class="flex justify-center space-x-4">
-          <a href="#"
+          <a id="openVideo" href="#"
             class="px-8 py-3 text-lg  rounded-full border border-gray-300 text-white transition duration-300 flex items-center space-x-2">
             <svg class="w-5 h-5" fill="black" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
@@ -4951,7 +4971,74 @@
       </div>
     </section>
 
+    <div id="yt-modal" class="modal fixed inset-0 z-[9999] flex items-center justify-center
+             bg-black/85
+             transition-opacity duration-300 ease-in-out">
+      <div class="relative w-[min(92vw,1200px)] h-[min(92vh,730px)]
+               bg-black rounded-lg overflow-hidden
+               shadow-[0_10px_30px_rgba(0,0,0,0.7)]">
+        <button id="closeVideo" class="absolute top-3 right-4 z-10
+                 text-[28px] text-white
+                 bg-none border-0 cursor-pointer">
+          ✕
+        </button>
+        <div class="absolute inset-0">
+          <div id="player" class="absolute inset-0 w-full h-full border-0"></div>
+        </div>
+      </div>
+    </div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+      let player;
+      const modal = document.getElementById("yt-modal");
+      const openBtn = document.getElementById("openVideo");
+      const closeBtn = document.getElementById("closeVideo");
+
+      function createPlayer() {
+        if (player) return;
+
+        player = new YT.Player("player", {
+          videoId: "8EYrn2HUx6A",
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            rel: 0,
+            modestbranding: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            disablekb: 1,
+            playsinline: 1,
+          },
+          events: {
+            onReady: (e) => e.target.playVideo()
+          }
+        });
+      }
+
+      openBtn.addEventListener("click", () => {
+        modal.classList.add("show");
+        createPlayer();
+      });
+
+      function closeModal() {
+        modal.classList.remove("show");
+
+        if (player) {
+          player.stopVideo();
+          player.destroy();
+          player = null;
+          document.getElementById("player").innerHTML = "";
+        }
+      }
+
+      closeBtn.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+    </script>
 </body>
 
 </html>
