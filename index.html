@@ -4904,7 +4904,12 @@
               d="M12 2C6.48 2 2 6.58 2 12.26c0 4.55 2.87 8.4 6.84 9.77.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.11-1.49-1.11-1.49-.9-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.64-1.36-2.22-.26-4.56-1.14-4.56-5.05 0-1.11.39-2.02 1.03-2.73-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.04A9.3 9.3 0 0 1 12 6.84c.85 0 1.71.12 2.51.35 1.91-1.31 2.75-1.04 2.75-1.04.55 1.41.2 2.45.1 2.71.64.71 1.03 1.62 1.03 2.73 0 3.92-2.34 4.78-4.57 5.04.36.32.69.95.69 1.92 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.02 10.02 0 0 0 22 12.26C22 6.58 17.52 2 12 2z" />
           </svg>
         </a>
-        <a href="https://github.com/DiogoAngelim/risk-divider/releases" class="ml-[32px] px-5 py-2 text-sm rounded-full bg-accent text-white hover:bg-blue-400 transition duration-300
+        <a
+          data-download-auto="risk-divider"
+          data-download-windows="https://github.com/DiogoAngelim/risk-divider/releases/download/v1.1.3/risk-divider-1.1.2.Setup.exe"
+          data-download-macos="https://github.com/DiogoAngelim/risk-divider/releases/download/v1.1.3/risk-divider-darwin-x64-1.1.2.zip"
+          data-download-fallback="https://github.com/DiogoAngelim/risk-divider/releases"
+          href="https://github.com/DiogoAngelim/risk-divider/releases" class="ml-[32px] px-5 py-2 text-sm rounded-full bg-accent text-white hover:bg-blue-400 transition duration-300
           shadow-lg"
           style="color: #fff;background: linear-gradient(#0000 0%,#ffffff0d 50%,#ffffff26 100%),#3547a4;position: relative;box-shadow: inset 0 1px 1px #0000000d,inset 0 1px 4px #ffffff80,inset 0 -2px 4px #0f1532,0 1px 4px #0003;">Download</a>
         <button class="md:hidden text-white focus:outline-none">
@@ -4942,9 +4947,14 @@
             </svg>
             <span style="
     color: black;
-">Play Video</span>
+">Watch the demo</span>
           </a>
-          <a href="https://github.com/DiogoAngelim/risk-divider/releases" target="_blank"
+          <a
+            data-download-auto="risk-divider"
+            data-download-windows="https://github.com/DiogoAngelim/risk-divider/releases/download/v1.1.3/risk-divider-1.1.2.Setup.exe"
+            data-download-macos="https://github.com/DiogoAngelim/risk-divider/releases/download/v1.1.3/risk-divider-darwin-x64-1.1.2.zip"
+            data-download-fallback="https://github.com/DiogoAngelim/risk-divider/releases"
+            href="https://github.com/DiogoAngelim/risk-divider/releases" target="_blank"
             class="flex gap-[12px] items-center px-8 py-3 text-lg rounded-full bg-accent text-white hover:bg-blue-400 transition duration-300"
             style="
     color: qhirw;
@@ -4952,12 +4962,8 @@
     background: linear-gradient(#0000 0%,#ffffff0d 50%,#ffffff10 100%),#3547a4;
     position: relative;
     box-shadow: inset 0 1px 1px #0000000d, inset 0 1px 4px #ffffff80, inset 0 -2px 4px #0f1532, 0 1px 4px #0003;
-"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-              class="size-5">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-            </svg>
-            <span>Download</span></a>
+"><span data-download-icon="risk-divider" class="size-5 flex-none" aria-hidden="true"></span>
+            <span>Optimize portfolio</span></a>
 
         </div>
       </div>
@@ -5048,6 +5054,80 @@
       modal.addEventListener("click", (e) => {
         if (e.target === modal) closeModal();
       });
+
+      function detectOsForDownload() {
+        const uaDataPlatform = navigator.userAgentData && navigator.userAgentData.platform;
+        if (typeof uaDataPlatform === "string" && uaDataPlatform.length > 0) {
+          const p = uaDataPlatform.toLowerCase();
+          if (p.includes("windows")) return "windows";
+          if (p.includes("mac")) return "macos";
+        }
+
+        const ua = (navigator.userAgent || "").toLowerCase();
+        const platform = (navigator.platform || "").toLowerCase();
+
+        if (/(iphone|ipad|ipod|android)/.test(ua)) return "unknown";
+
+        if (platform.includes("win") || ua.includes("windows")) return "windows";
+        if (platform.includes("mac") || ua.includes("mac os") || ua.includes("macintosh")) return "macos";
+
+        return "unknown";
+      }
+
+      function applyOsDownloadLinks() {
+        const os = detectOsForDownload();
+        const nodes = document.querySelectorAll('[data-download-auto="risk-divider"]');
+
+        nodes.forEach((node) => {
+          const fallback = node.getAttribute("data-download-fallback") || node.getAttribute("href");
+          const urlAttr =
+            os === "windows"
+              ? "data-download-windows"
+              : os === "macos"
+                ? "data-download-macos"
+                : null;
+
+          const url = urlAttr ? node.getAttribute(urlAttr) : null;
+          node.setAttribute("href", url || fallback || "#");
+        });
+      }
+
+      function applyOsDownloadIcons() {
+        const os = detectOsForDownload();
+        const iconTargets = document.querySelectorAll('[data-download-icon="risk-divider"]');
+
+        const macosSvg = `
+<svg viewBox="116 142 24 29" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-full h-full">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g fill="#FFFFFF" fill-rule="nonzero">
+      <path d="M136.044035,157.406722 C136.085473,161.795466 139.957156,163.25589 140,163.274522 C139.967188,163.377461 139.381344,165.355716 137.960283,167.399092 C136.731785,169.165751 135.456692,170.92586 133.4481,170.962295 C131.474665,170.998083 130.839978,169.810872 128.583605,169.810872 C126.327889,169.810872 125.622796,170.92586 123.754548,170.998083 C121.8158,171.070307 120.339426,169.087809 119.100803,167.327607 C116.569555,163.727232 114.635213,157.153618 117.232555,152.716356 C118.522835,150.51276 120.828801,149.117457 123.331548,149.081668 C125.235328,149.045972 127.032326,150.341841 128.196137,150.341841 C129.359198,150.341841 131.542915,148.783459 133.838569,149.012305 C134.799505,149.051691 137.497253,149.394175 139.22947,151.888878 C139.089782,151.974015 136.010567,153.737721 136.044035,157.406814 M132.335008,146.630318 C133.364382,145.404459 134.0571,143.698032 133.8681,142 C132.384414,142.058664 130.590416,142.972755 129.526167,144.197877 C128.572449,145.282887 127.737231,147.019383 127.962606,148.683748 C129.616354,148.809655 131.305728,147.856916 132.335102,146.630318" />
+    </g>
+  </g>
+</svg>`.trim();
+
+        const windowsSvg = `
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-full h-full">
+  <path fill="#FFFFFF" fill-rule="nonzero" d="M12.624,12.6245625 L23.9994375,12.6245625 L23.9994375,24 L12.624,24 L12.624,12.6245625 Z M0.0005625,12.6245625 L11.376,12.6245625 L11.376,24 L0.0005625,24 L0.0005625,12.6245625 Z M12.624,0 L23.9994375,0 L23.9994375,11.3754375 L12.624,11.3754375 L12.624,0 Z M0.0005625,0 L11.376,0 L11.376,11.3754375 L0.0005625,11.3754375 L0.0005625,0 Z" />
+</svg>`.trim();
+
+        const svg = os === "macos" ? macosSvg : os === "windows" ? windowsSvg : "";
+
+        iconTargets.forEach((el) => {
+          if (!svg) {
+            el.innerHTML = "";
+            el.style.display = "none";
+            return;
+          }
+
+          el.style.display = "inline-flex";
+          el.innerHTML = svg;
+        });
+      }
+
+      applyOsDownloadLinks();
+      applyOsDownloadIcons();
+      document.addEventListener("DOMContentLoaded", applyOsDownloadLinks);
+      document.addEventListener("DOMContentLoaded", applyOsDownloadIcons);
 
     </script>
 </body>
